@@ -1,0 +1,42 @@
+[project]
+name = "ci"
+authors = [
+  { name="Caspar Nettelbladt", email="caspar.n@gmail.com" },
+]
+version = "0.0.1"
+description = "GPT Tools"
+readme = "README.md"
+dependencies=[
+  "openai",
+  "requests",
+]
+package = "ci"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+ci = "ci.main:ci"
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.isort]
+profile = "black"
