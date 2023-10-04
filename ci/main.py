@@ -1,5 +1,3 @@
-import sys
-
 import openai
 
 from . import git
@@ -42,7 +40,7 @@ Shorter is always better.
             *history,
             input_message,
         ],
-        temperature=0,
+        temperature=1,
     )
 
     print(response)
