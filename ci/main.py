@@ -36,6 +36,8 @@ def generate_commit(input_diff: str) -> str:
     COMMIT_INSTRUCTION = """
 You will receive a git diff and respond with a git commit message.
 Limit the subject line to 50 characters.
+Separate subject from body with a blank line.
+Be concise and to the point.
 """
 
     system_message = {"role": "system", "content": COMMIT_INSTRUCTION}
