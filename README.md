@@ -4,5 +4,5 @@ GPT Powered Commit
 ## Install
 
 ```bash
-pipx install kaar/ci
+pipx install git+https://github.com/kaar/ci.git
 ```
