@@ -1,9 +1,7 @@
 import logging
 import os
 
-import openai
-
-from . import git
+from ci import git, models, openai
 
 LOGGER = logging.getLogger(__name__)
 DEFAULT_MODEL = "gpt-4"
@@ -26,8 +24,8 @@ def commit_history():
     for commit in git.latest_commits(5):
         if len(commit.diff) > max_diff_length:
             continue
-        history.append({"role": "user", "content": commit.diff})
-        history.append({"role": "assistant", "content": commit.message})
+        history.append(models.UserMessage(commit.diff))
+        history.append(models.AssistantMessage(commit.message))
 
     return history
 
@@ -40,21 +38,21 @@ Separate subject from body with a blank line.
 Be concise and to the point.
 """
 
-    system_message = {"role": "system", "content": COMMIT_INSTRUCTION}
-
-    input_message = {"role": "user", "content": input_diff}
-
+    system_message = models.SystemMessage(COMMIT_INSTRUCTION)
     history = []
     history.extend(commit_history())
+    input_message = models.UserMessage(input_diff)
 
-    response = openai.ChatCompletion.create(
-        model=DEFAULT_MODEL,
-        messages=[
-            system_message,
-            *history,
-            input_message,
-        ],
-        temperature=0.2,
+    response = openai.chat_completion(
+        request=models.ChatRequest(
+            model=DEFAULT_MODEL,
+            messages=[
+                system_message,
+                *history,
+                input_message,
+            ],
+            temperature=0.2,
+        )
     )
     commit_msg = response.choices[0].message.content
 
