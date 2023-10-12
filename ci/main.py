@@ -9,7 +9,7 @@ DEFAULT_MODEL = "gpt-4"
 
 def setup_logging():
     DEBUG = os.environ.get("DEBUG", False)
-    log_level = logging.DEBUG if __debug__ or DEBUG else logging.INFO
+    log_level = logging.DEBUG if DEBUG else logging.INFO
     logging.basicConfig(
         level=log_level,
         format="%(asctime)s %(levelname)s %(message)s",
