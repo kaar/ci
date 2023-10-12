@@ -24,6 +24,7 @@ lint: venv
 .PHONY: lint
 
 test: venv
+	@$(BIN)/pytest -s -q $(TESTS)
 .PHONY: test
 
 build: clean
