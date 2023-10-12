@@ -6,7 +6,7 @@ import openai
 from . import git
 
 LOGGER = logging.getLogger(__name__)
-DEFAULT_MODEL = "gpt-3.5-turbo"
+DEFAULT_MODEL = "gpt-4"
 
 
 def setup_logging():
