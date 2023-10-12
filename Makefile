@@ -2,20 +2,18 @@ PROJECT_NAME := ci
 VENV := .venv
 SRC := $(LIBRARY_NAME)
 BIN := $(VENV)/bin
+PYTHON := $(BIN)/python
+PIP := $(BIN)/pip
+TESTS := tests
 
 .venv/bin/activate:
 	@echo "Virtual environment does not exist. Creating one..."
 	python -m venv .venv
 
 venv: $(VENV)/bin/activate
-	@$(VENV)/bin/pip install --upgrade -q \
-		pip \
-		build \
-		ruff \
-		black \
-		isort \
-		mypy \
-	$(BIN)/pip install .
+	@$(PYTHON) -m pip -q install --upgrade pip
+	@$(PIP) install -q pytest
+	@$(PIP) install -q -r requirements.txt
 
 lint: venv
 	$(BIN)/ruff $(SRC)
