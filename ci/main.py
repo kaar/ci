@@ -20,6 +20,18 @@ def setup_logging():
     LOGGER.debug("Debug mode enabled")
 
 
+def commit_history():
+    max_diff_length = 1000
+    history = []
+    for commit in git.latest_commits(5):
+        if len(commit.diff) > max_diff_length:
+            continue
+        history.append({"role": "user", "content": commit.diff})
+        history.append({"role": "assistant", "content": commit.message})
+
+    return history
+
+
 def generate_commit(input_diff: str) -> str:
     COMMIT_INSTRUCTION = """
 You will receive a git diff and respond with a git commit message.
