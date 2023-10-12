@@ -45,6 +45,8 @@ Be concise and to the point.
     input_message = {"role": "user", "content": input_diff}
 
     history = []
+    history.extend(commit_history())
+
     response = openai.ChatCompletion.create(
         model=DEFAULT_MODEL,
         messages=[
