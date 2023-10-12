@@ -40,3 +40,16 @@ ignore = [
 
 [tool.isort]
 profile = "black"
+
+[tool.pytest]
+addopts = [
+    "--cov=ci",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=100",
+    "--cov-branch",
+    "--cov-context=test",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
