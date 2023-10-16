@@ -69,11 +69,8 @@ Separate subject from body with a blank line.
 Be concise and to the point.
 """
     last_commit = git.last_commit()
-    # print(last_commit.diff)
-    # print(last_commit.message)
     input_diff = git.cached_diff()
 
-    # input_diff = last_commit.diff
     messages = [
         models.SystemMessage(COMMIT_INSTRUCTION),
         models.UserMessage(last_commit.message),
@@ -87,9 +84,7 @@ Be concise and to the point.
         )
     )
     commit_msg = response.choices[0].message.content
-    # commit_msg = generate_commit(input_diff)
     git.amend_commit(commit_msg)
-    # print(commit_msg)
 
 
 def ci():
