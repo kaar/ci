@@ -41,7 +41,6 @@ Be concise and to the point.
 
     system_message = models.SystemMessage(COMMIT_INSTRUCTION)
     history = []
-    history.extend(commit_history())
     input_message = models.UserMessage(input_diff)
 
     response = openai.chat_completion(
