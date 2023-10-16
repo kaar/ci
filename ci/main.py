@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 
@@ -59,11 +60,55 @@ Be concise and to the point.
     return commit_msg
 
 
-def ci():
-    setup_logging()
+def amend_commit():
+    COMMIT_INSTRUCTION = """
+You will receive first receive the previous commit message.
+Then you will receive a git diff and respond with a git commit message.
+Limit the subject line to 50 characters.
+Separate subject from body with a blank line.
+Be concise and to the point.
+"""
+    last_commit = git.last_commit()
+    # print(last_commit.diff)
+    # print(last_commit.message)
     input_diff = git.cached_diff()
-    commit_msg = generate_commit(input_diff)
-    git.create_commit(commit_msg)
+
+    # input_diff = last_commit.diff
+    messages = [
+        models.SystemMessage(COMMIT_INSTRUCTION),
+        models.UserMessage(last_commit.message),
+        models.UserMessage(input_diff),
+    ]
+    response = openai.chat_completion(
+        request=models.ChatRequest(
+            model=DEFAULT_MODEL,
+            messages=messages,
+            temperature=0.2,
+        )
+    )
+    commit_msg = response.choices[0].message.content
+    # commit_msg = generate_commit(input_diff)
+    git.amend_commit(commit_msg)
+    # print(commit_msg)
+
+
+def ci():
+    """
+    Options:
+        --amend: Amend the last commit instead of creating a new one.
+    """
+    setup_logging()
+    argparser = argparse.ArgumentParser()
+
+    argparser.add_argument("--amend", action="store_true")
+    args = argparser.parse_args()
+
+    if args.amend:
+        amend_commit()
+    else:
+        input_diff = git.cached_diff()
+        commit_msg = generate_commit(input_diff)
+        git.create_commit(commit_msg)
 
 
 if __name__ == "__main__":
