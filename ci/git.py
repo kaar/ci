@@ -3,6 +3,11 @@ import subprocess
 from dataclasses import dataclass
 
 
+def last_commit() -> str:
+    diff = subprocess.check_output(["git", "diff", "HEAD~"])
+    return diff.decode("utf-8")
+
+
 def cached_diff() -> str:
     diff = subprocess.check_output(["git", "diff", "--cached"])
     return diff.decode("utf-8")
