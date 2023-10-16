@@ -48,6 +48,9 @@ class Commit:
     message: str
     diff: str
 
+    def __str__(self):
+        return f"{self.commit_hash} {self.author} {self.date}\n{self.message}"
+
 
 def parse_commit(commit_text: str) -> Commit:
     commit_and_diff = re.split("\n(?=diff --git)", commit_text)
