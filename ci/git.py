@@ -3,11 +3,6 @@ import subprocess
 from dataclasses import dataclass
 
 
-def last_commit() -> str:
-    diff = subprocess.check_output(["git", "diff", "HEAD~"])
-    return diff.decode("utf-8")
-
-
 def cached_diff() -> str:
     diff = subprocess.check_output(["git", "diff", "--cached"])
     return diff.decode("utf-8")
@@ -56,6 +51,12 @@ def parse_commit(commit_text: str) -> Commit:
 def parse_git_log(log_data) -> list[Commit]:
     commits = re.split("\n(?=commit)", log_data)
     return [parse_commit(commit_text=commit) for commit in commits]
+
+
+def last_commit() -> Commit:
+    show = subprocess.check_output(["git", "show"])
+    show_text = show.decode("utf-8")
+    return parse_commit(show_text)
 
 
 def latest_commits(n: int) -> list[Commit]:
