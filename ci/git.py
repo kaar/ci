@@ -36,7 +36,7 @@ def amend_commit(message: str) -> None:
     Returns:
         None
     """
-    p = subprocess.Popen(['git', "commit", "--amend", "-eF", "-"], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(['git', "commit", "--amend", "-e", "-F", "-"], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     _ = p.communicate(input=message.encode("utf-8"))[0]
 
 
