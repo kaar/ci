@@ -19,10 +19,11 @@ def setup_logging():
 
 
 def commit_history():
-    max_diff_length = 1000
+    max_diff_length = 2500
     history = []
     for commit in git.latest_commits(5):
         if len(commit.diff) > max_diff_length:
+            LOGGER.debug(f"Skipping commit with diff length {len(commit.diff)}")
             continue
         history.append(models.UserMessage(commit.diff))
         history.append(models.AssistantMessage(commit.message))
