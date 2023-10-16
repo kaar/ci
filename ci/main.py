@@ -87,6 +87,12 @@ Be concise and to the point.
     git.amend_commit(commit_msg)
 
 
+def new_commit():
+    input_diff = git.cached_diff()
+    commit_msg = generate_commit(input_diff)
+    git.create_commit(commit_msg)
+
+
 def ci():
     """
     Options:
@@ -101,9 +107,7 @@ def ci():
     if args.amend:
         amend_commit()
     else:
-        input_diff = git.cached_diff()
-        commit_msg = generate_commit(input_diff)
-        git.create_commit(commit_msg)
+        new_commit()
 
 
 if __name__ == "__main__":
