@@ -24,6 +24,22 @@ def create_commit(message: str) -> None:
     _ = p.communicate(input=message.encode("utf-8"))[0]
 
 
+def amend_commit(message: str) -> None:
+    """
+    Creates a commit with the given message.
+
+    Set editor by setting the EDITOR environment variable.
+
+    Args:
+        message: The commit message.
+
+    Returns:
+        None
+    """
+    p = subprocess.Popen(['git', "commit", "--amend", "-eF", "-"], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    _ = p.communicate(input=message.encode("utf-8"))[0]
+
+
 @dataclass
 class Commit:
     commit_hash: str
