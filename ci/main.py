@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-from ci import commit, review
+from ci import commit, git, review
 
 LOGGER = logging.getLogger(__name__)
 DEFAULT_MODEL = "gpt-4"
@@ -35,10 +35,20 @@ def ci():
 
     args = argparser.parse_args()
 
-    if args.review:
-        LOGGER.debug(f"Reviewing {args.review}")
-        review.print_review(args.review)
-        return
+    match args.review:
+        case None:
+            pass
+        case "staged":
+            review.cached()
+            return
+        case "-":
+            review.stdin()
+            return
+        case commit_hash if git.validate_commit_hash(commit_hash):
+            review.commit(commit_hash)
+            return
+        case _:
+            raise ValueError(f"Invalid review argument {args.review}")
 
     if args.amend:
         commit.amend()
