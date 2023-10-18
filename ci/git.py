@@ -1,6 +1,26 @@
 import re
 import subprocess
 from dataclasses import dataclass
+from typing import Optional
+
+
+def add(file_path: Optional[str], patch: bool = False) -> None:
+    """
+    Adds a file to the git index.
+
+    Args:
+        file_path: The path to the file to add.
+        patch: If true, add interactively.
+
+    Returns:
+        None
+    """
+    cmd = ["git", "add"]
+    if patch:
+        cmd.append("-p")
+    if file_path:
+        cmd.append(file_path)
+    subprocess.check_call(cmd)
 
 
 def cached_diff() -> str:

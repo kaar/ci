@@ -2,7 +2,7 @@ from typing import Optional
 
 import click
 
-from ci import commit, review
+from ci import commit, git, highlight, review
 
 
 @click.group()
@@ -44,8 +44,25 @@ def ci(amend: bool):
         commit.new()
 
 
+@click.command()
+@click.argument("commit_hash", required=False, default="HEAD")
+def show(commit_hash: str):
+    """Show commit"""
+    click.echo(highlight.diff(git.show(commit_hash)))
+
+
+@click.command()
+@click.argument("file_path", required=False)
+@click.option("--patch", "-p", is_flag=True)
+def add(file_path: Optional[str], patch: bool):
+    """Add commit"""
+    git.add(file_path, patch=patch)
+
+
 cli.add_command(aliases)
 cli.add_command(ci)
 cli.add_command(cmd_review)
+cli.add_command(show)
+cli.add_command(add)
 if __name__ == '__main__':
     cli()
