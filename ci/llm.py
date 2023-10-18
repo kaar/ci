@@ -65,3 +65,26 @@ Be concise and to the point.
     commit_msg = response.choices[0].message.content
 
     return commit_msg
+
+
+def amend_commit(last_commit: str, diff: str, model: str = DEFAULT_MODEL, temperature: float = 0.2) -> str:
+    COMMIT_INSTRUCTION = """
+You will receive first receive the previous commit message.
+Then you will receive a git diff and respond with a git commit message.
+Limit the subject line to 50 characters.
+Separate subject from body with a blank line.
+Be concise and to the point.
+"""
+    response = openai.chat_completion(
+        request=models.ChatRequest(
+            model=model,
+            messages=[
+                models.SystemMessage(COMMIT_INSTRUCTION),
+                models.UserMessage(last_commit),
+                models.UserMessage(diff),
+            ],
+            temperature=temperature,
+        )
+    )
+    commit_msg = response.choices[0].message.content
+    return commit_msg
