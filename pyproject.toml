@@ -18,7 +18,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-ci = "ci.main:ci"
+aig = "ci.aig:cli"
 
 [tool.black]
 line-length = 120
