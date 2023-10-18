@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-from ci import git, models, openai
+from ci import git, models, openai, review
 
 LOGGER = logging.getLogger(__name__)
 DEFAULT_MODEL = "gpt-4"
@@ -97,12 +97,22 @@ def ci():
     """
     Options:
         --amend: Amend the last commit instead of creating a new one.
+        --review <commit>: Review a commit, default is staged changes.
+        - Read from stdin
     """
     setup_logging()
     argparser = argparse.ArgumentParser()
 
     argparser.add_argument("--amend", action="store_true")
+    # Default value is "staged" and that will read the diff from git diff --cached
+    argparser.add_argument("--review", nargs="?", const="staged")
+
     args = argparser.parse_args()
+
+    if args.review:
+        LOGGER.debug(f"Reviewing {args.review}")
+        review.print_review(args.review)
+        return
 
     if args.amend:
         amend_commit()

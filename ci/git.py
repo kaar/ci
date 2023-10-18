@@ -40,6 +40,33 @@ def amend_commit(message: str) -> None:
     _ = p.communicate(input=message.encode("utf-8"))[0]
 
 
+def validate_commit_hash(commit_hash: str) -> bool:
+    return bool(re.match(r'^[0-9a-f]{7,40}$', commit_hash))
+
+
+def commit_hash_exists(commit_hash: str) -> bool:
+    """
+    Returns True if the commit hash exists in the git repository.
+
+    git rev-parse --verify <commit_hash>
+    """
+    try:
+        subprocess.check_output(["git", "rev-parse", "--verify", commit_hash])
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def show(commit_hash: str) -> str:
+    # TODO: Handle command injection, this may not be enough.
+    if not validate_commit_hash(commit_hash):
+        raise ValueError(f"Invalid commit hash {commit_hash}")
+
+    cmd = ["git", "show", commit_hash, "--pretty="]
+    diff = subprocess.check_output(cmd)
+    return diff.decode("utf-8")
+
+
 @dataclass
 class Commit:
     commit_hash: str
