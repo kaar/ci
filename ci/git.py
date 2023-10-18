@@ -41,6 +41,9 @@ def amend_commit(message: str) -> None:
 
 
 def validate_commit_hash(commit_hash: str) -> bool:
+    if commit_hash.startswith("HEAD"):
+        return True
+
     return bool(re.match(r'^[0-9a-f]{7,40}$', commit_hash))
 
 
