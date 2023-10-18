@@ -2,7 +2,7 @@ from typing import Optional
 
 import click
 
-from ci import commit, git, highlight, review
+from ci import cmd
 
 
 @click.group()
@@ -20,12 +20,12 @@ def cmd_review():
 @click.option("--cached", is_flag=True)
 def cmd_review_diff(commit_hash: Optional[str], cached: bool):
     if cached:
-        review.cached()
+        cmd.review.cached()
     elif commit_hash:
-        review.commit(commit_hash)
+        cmd.review.commit(commit_hash)
     else:
         # Example: `git dc | gi review diff`
-        review.stdin()
+        cmd.review.stdin()
 
 
 @click.command()
@@ -39,16 +39,16 @@ def aliases():
 def ci(amend: bool):
     """Commit"""
     if amend:
-        commit.amend()
+        cmd.commit.amend()
     else:
-        commit.new()
+        cmd.commit.new()
 
 
 @click.command()
 @click.argument("commit_hash", required=False, default="HEAD")
 def show(commit_hash: str):
     """Show commit"""
-    click.echo(highlight.diff(git.show(commit_hash)))
+    cmd.show.show(commit_hash)
 
 
 @click.command()
@@ -56,24 +56,20 @@ def show(commit_hash: str):
 @click.option("--patch", "-p", is_flag=True)
 def add(file_path: Optional[str], patch: bool):
     """Add commit"""
-    git.add(file_path, patch=patch)
+    cmd.add.add(file_path, patch=patch)
 
 
 @click.command("dc")
 def diff_cached():
     """Show cached diff"""
-    # TODO:
-    # Instead of highlight. Use the tool defined in the config.
-    # [core]
-    # pager = <tool>
-    click.echo(highlight.diff(git.cached_diff()))
+    cmd.diff.cached()
 
 
 @click.command("st")
 @click.argument("file_path", required=False)
 def status(file_path: Optional[str]):
     """Show status"""
-    click.echo(highlight.status(git.status(file_path)))
+    cmd.status.status(file_path)
 
 
 cli.add_command(aliases)
