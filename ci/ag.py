@@ -59,10 +59,29 @@ def add(file_path: Optional[str], patch: bool):
     git.add(file_path, patch=patch)
 
 
+@click.command("dc")
+def diff_cached():
+    """Show cached diff"""
+    # TODO:
+    # Instead of highlight. Use the tool defined in the config.
+    # [core]
+    # pager = <tool>
+    click.echo(highlight.diff(git.cached_diff()))
+
+
+@click.command("st")
+@click.argument("file_path", required=False)
+def status(file_path: Optional[str]):
+    """Show status"""
+    click.echo(highlight.status(git.status(file_path)))
+
+
 cli.add_command(aliases)
 cli.add_command(ci)
 cli.add_command(cmd_review)
 cli.add_command(show)
 cli.add_command(add)
+cli.add_command(diff_cached)
+cli.add_command(status)
 if __name__ == '__main__':
     cli()

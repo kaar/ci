@@ -23,6 +23,20 @@ def add(file_path: Optional[str], patch: bool = False) -> None:
     subprocess.check_call(cmd)
 
 
+def status(file_path: Optional[str]) -> str:
+    """
+    Returns the output of `git status`.
+
+    Returns:
+        The output of `git status`.
+    """
+    cmd = ["git", "status"]
+    if file_path:
+        cmd.append(file_path)
+
+    return subprocess.check_output(cmd).decode("utf-8")
+
+
 def cached_diff() -> str:
     diff = subprocess.check_output(["git", "diff", "--cached"])
     return diff.decode("utf-8")
