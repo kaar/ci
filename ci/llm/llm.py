@@ -1,4 +1,4 @@
-from ci import models, openai
+from . import models, openai
 
 DEFAULT_MODEL = "gpt-4"
 

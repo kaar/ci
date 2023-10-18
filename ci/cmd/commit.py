@@ -1,16 +1,4 @@
-from ci import git, llm, models
-
-
-def commit_history():
-    max_diff_length = 2500
-    history = []
-    for c in git.latest_commits(5):
-        if len(c.diff) > max_diff_length:
-            continue
-        history.append(models.UserMessage(c.diff))
-        history.append(models.AssistantMessage(c.message))
-
-    return history
+from ci import git, llm
 
 
 def new():
