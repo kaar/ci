@@ -1,6 +1,6 @@
 import sys
 
-from ci import git, llm
+from ci import git, llm, markdown
 
 
 def print_review(review_args):
@@ -20,4 +20,5 @@ def print_review(review_args):
         case _:
             raise ValueError(f"Invalid review argument {review_args}")
 
-    print(code_review)
+    highlighted_code_review = markdown.highlight(code_review)
+    print(highlighted_code_review)
