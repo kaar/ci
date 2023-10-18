@@ -1,4 +1,4 @@
-from . import models, openai
+from . import openai
 
 DEFAULT_MODEL = "gpt-4"
 
@@ -18,11 +18,11 @@ Use markdown to format your review.
 """
 
     response = openai.chat_completion(
-        request=models.ChatRequest(
+        request=openai.ChatRequest(
             model=model,
             messages=[
-                models.SystemMessage(instruction),
-                models.UserMessage(diff),
+                openai.SystemMessage(instruction),
+                openai.UserMessage(diff),
             ],
             temperature=temperature,
         )
@@ -48,11 +48,11 @@ Be concise and to the point.
 """
     history = history or []
 
-    system_message = models.SystemMessage(COMMIT_INSTRUCTION)
-    input_message = models.UserMessage(input_diff)
+    system_message = openai.SystemMessage(COMMIT_INSTRUCTION)
+    input_message = openai.UserMessage(input_diff)
 
     response = openai.chat_completion(
-        request=models.ChatRequest(
+        request=openai.ChatRequest(
             model=model,
             messages=[
                 system_message,
@@ -76,12 +76,12 @@ Separate subject from body with a blank line.
 Be concise and to the point.
 """
     response = openai.chat_completion(
-        request=models.ChatRequest(
+        request=openai.ChatRequest(
             model=model,
             messages=[
-                models.SystemMessage(COMMIT_INSTRUCTION),
-                models.UserMessage(last_commit),
-                models.UserMessage(diff),
+                openai.SystemMessage(COMMIT_INSTRUCTION),
+                openai.UserMessage(last_commit),
+                openai.UserMessage(diff),
             ],
             temperature=temperature,
         )
