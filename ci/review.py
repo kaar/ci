@@ -1,10 +1,10 @@
 import sys
 
-from ci import git, llm, markdown
+from ci import git, highlight, llm
 
 
 def print_review(code_review: str):
-    highlighted_code_review = markdown.highlight(code_review)
+    highlighted_code_review = highlight.markdown(code_review)
     print(highlighted_code_review)
 
 
