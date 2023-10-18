@@ -65,7 +65,7 @@ def show(commit_hash: str) -> str:
     if not validate_commit_hash(commit_hash):
         raise ValueError(f"Invalid commit hash {commit_hash}")
 
-    cmd = ["git", "show", commit_hash, "--pretty="]
+    cmd = ["git", "show", commit_hash]
     diff = subprocess.check_output(cmd)
     return diff.decode("utf-8")
 
