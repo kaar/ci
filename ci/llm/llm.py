@@ -56,7 +56,6 @@ Be concise and to the point.
             model=model,
             messages=[
                 system_message,
-                *history,
                 input_message,
             ],
             temperature=temperature,
