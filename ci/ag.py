@@ -31,6 +31,13 @@ def cmd_review():
     """Code review"""
 
 
+@cmd_review.command("pr")
+def cmd_review_pr():
+    """Review pull request"""
+    # TODO: Implement pull request review
+    click.echo("Pull request")
+
+
 @cmd_review.command("diff")
 @click.argument("commit_hash", required=False)
 @click.option("--cached", is_flag=True)
