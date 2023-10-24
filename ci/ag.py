@@ -1,12 +1,28 @@
+import logging
+import os
 from typing import Optional
 
 import click
 
 from ci import cmd
 
+LOGGER = logging.getLogger(__name__)
+
+
+def setup_logging():
+    DEBUG = os.environ.get("DEBUG", False)
+    log_level = logging.DEBUG if DEBUG else logging.INFO
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s %(name)s %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    LOGGER.debug("Debug mode enabled")
+
 
 @click.group()
 def cli():
+    setup_logging()
     pass
 
 
