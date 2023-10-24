@@ -14,7 +14,7 @@ EOF
 instruction=$(echo "${instruction}" | jq -sRr @uri)
 
 git_diff=$(git diff --cached | jq -sRr @uri)
-curl -sX POST "https://api.openai.com/v1/chat/completions" \
+commit_msg=$(curl -sX POST "https://api.openai.com/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${OPENAI_API_KEY}" \
   -d '{
@@ -24,4 +24,6 @@ curl -sX POST "https://api.openai.com/v1/chat/completions" \
       {"role": "user", "content": "'${git_diff}'"}
     ],
     "temperature": 0.2
-  }' | jq -r '.choices[0].message.content'
+  }' | jq -r '.choices[0].message.content')
+
+echo "${commit_msg}" | git commit -eF -
