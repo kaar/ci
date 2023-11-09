@@ -1,9 +1,11 @@
 from . import openai
 
-DEFAULT_MODEL = "gpt-4"
 
-
-def review(diff: str, model: str = DEFAULT_MODEL, temperature: float = 0.2) -> str:
+def review(
+    diff: str,
+    model: str = openai.Models.DEFAULT_MODEL,
+    temperature: float = 0.2,
+) -> str:
     """
     This function takes a git diff as input and returns a code review
     as output.
@@ -35,7 +37,7 @@ Use markdown to format your review.
 def commit_msg(
     input_diff: str,
     history: list,
-    model: str = DEFAULT_MODEL,
+    model: str = openai.Models.DEFAULT_MODEL,
     temperature: float = 0.2,
 ) -> str:
     """This function takes a git diff as input and returns a git commit message"""
@@ -66,7 +68,12 @@ Be concise and to the point.
     return commit_msg
 
 
-def amend_commit(last_commit: str, diff: str, model: str = DEFAULT_MODEL, temperature: float = 0.2) -> str:
+def amend_commit(
+    last_commit: str,
+    diff: str,
+    model: str = openai.Models.DEFAULT_MODEL,
+    temperature: float = 0.2,
+) -> str:
     COMMIT_INSTRUCTION = """
 You will receive first receive the previous commit message.
 Then you will receive a git diff and respond with a git commit message.

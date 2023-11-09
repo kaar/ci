@@ -5,6 +5,14 @@ from typing import Optional
 import openai
 
 
+class Models:
+    GPT_3_5_TURBO = "gpt-3.5-turbo"
+    GPT_4 = "gpt-4"
+    GPT_4_TURBO = "gpt-4-1106-preview"
+
+    DEFAULT_MODEL = GPT_4_TURBO
+
+
 @dataclass
 class Message:
     """
