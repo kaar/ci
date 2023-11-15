@@ -1,3 +1,4 @@
+import datetime
 import json
 from dataclasses import asdict, dataclass, field
 from typing import Optional
@@ -174,7 +175,52 @@ class ChatRequest:
         return json.dumps(asdict(self), indent=2)
 
 
-def chat_completion(request: ChatRequest):
+@dataclass
+class ChatCompletionResponse:
+    """
+    Response from the OpenAI API for a chat completion request.
+    """
+
+    @dataclass
+    class Choices:
+        message: Message
+        index: int
+        finish_reason: str
+
+        def __post_init__(self):
+            if isinstance(self.message, dict):
+                self.message = Message(**self.message)
+
+    @dataclass
+    class Usage:
+        prompt_tokens: int
+        completion_tokens: int
+        total_tokens: int
+
+    id: str
+    object: str
+    created: datetime.datetime
+    model: str
+    choices: list[Choices]
+    usage: Usage
+    system_fingerprint: str
+
+    def __post_init__(self):
+        if isinstance(self.created, int):
+            self.created = datetime.datetime.fromtimestamp(self.created)
+
+        if isinstance(self.choices, list):
+            self.choices = [self.Choices(**choice) for choice in self.choices if isinstance(choice, dict)]
+
+        if isinstance(self.usage, dict):
+            self.usage = self.Usage(**self.usage)
+
+    @property
+    def message(self) -> Message:
+        return self.choices[0].message
+
+
+def chat_completion(request: ChatRequest) -> ChatCompletionResponse:
     messages: list[dict] = [
         {
             "role": message.role,
@@ -188,4 +234,5 @@ def chat_completion(request: ChatRequest):
         messages=messages,
         temperature=request.temperature,
     )
-    return response
+
+    return ChatCompletionResponse(**response)
