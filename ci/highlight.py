@@ -54,7 +54,7 @@ def markdown(text: str, wrap: bool = True):
     return pygments.highlight(text, MarkdownLexer(), TerminalFormatter())
 
 
-def status(status_text: str):
+def git_status(status_text: str):
     """
     Highlights the git status output.
 
