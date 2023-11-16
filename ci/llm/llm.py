@@ -1,6 +1,32 @@
 from . import openai
 
 
+def code_review(
+    code: str,
+    model: str = openai.Models.DEFAULT_MODEL,
+    temperature: float = 0.2,
+) -> str:
+    instruction = """
+Respond with a code review of the commit.
+Look for bugs, security issues, and opportunities for improvement.
+Provide short actionable comments with examples if needed.
+Use markdown to format your review.
+"""
+    response = openai.chat_completion(
+        request=openai.ChatRequest(
+            model=model,
+            messages=[
+                openai.SystemMessage(instruction),
+                openai.UserMessage(code),
+            ],
+            temperature=temperature,
+        )
+    )
+    msg = response.choices[0].message.content
+
+    return msg
+
+
 def review(
     diff: str,
     model: str = openai.Models.DEFAULT_MODEL,
@@ -18,7 +44,6 @@ Provide short actionable comments with examples if needed.
 If no issues are found, respond with "Looks good to me".
 Use markdown to format your review.
 """
-
     response = openai.chat_completion(
         request=openai.ChatRequest(
             model=model,

@@ -31,6 +31,12 @@ def cmd_review():
     """Code review"""
 
 
+@cmd_review.command("file")
+@click.argument("file", required=False)
+def cmd_review_file(file):
+    cmd.review.file(file)
+
+
 @cmd_review.command("pr")
 def cmd_review_pr():
     """Review pull request"""
