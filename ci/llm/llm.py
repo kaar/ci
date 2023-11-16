@@ -69,9 +69,14 @@ def commit_msg(
 
     COMMIT_INSTRUCTION = """
 You will receive a git diff and respond with a git commit message.
-Limit the subject line to 50 characters.
+Provide a clear and concise commit message that summarizes the changes made in this diff.
 Separate subject from body with a blank line.
-Be concise and to the point.
+Limit the subject line to 50 characters.
+Capitalize the subject line.
+Do not end the subject line with a period.
+Use the imperative mood in the subject line.
+Wrap the body at 72 characters.
+Use the body to explain what and why vs. how.
 """
     history = history or []
 
