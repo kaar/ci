@@ -65,12 +65,13 @@ def aliases():
 
 @click.command()
 @click.option("--amend", is_flag=True)
-def ci(amend: bool):
+@click.option("--history", is_flag=False, default=1)
+def ci(amend: bool, history: int):
     """Commit"""
     if amend:
-        cmd.commit.amend()
+        cmd.commit.amend_commit(history)
     else:
-        cmd.commit.new()
+        cmd.commit.create_new_commit(history)
 
 
 @click.command()
