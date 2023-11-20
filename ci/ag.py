@@ -69,7 +69,7 @@ def aliases():
 def ci(amend: bool, history: int):
     """Commit"""
     if amend:
-        cmd.commit.amend_commit(history)
+        cmd.commit.amend_commit()
     else:
         cmd.commit.create_new_commit(history)
 

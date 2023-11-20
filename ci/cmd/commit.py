@@ -24,7 +24,7 @@ def create_new_commit(history=0):
     git.create_commit(commit_msg)
 
 
-def amend_commit(history: int):
+def amend_commit():
     """
     Amend the latest Git commit.
 
@@ -38,7 +38,7 @@ def amend_commit(history: int):
     if not input_diff:
         raise ValueError("No changes to commit.")
 
-    history_messages = _get_history(history)
+    history_messages = _get_history(1)
 
     commit_msg = _ask_for_commit_msg(input_diff.text, history=history_messages)
 
