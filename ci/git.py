@@ -1,7 +1,36 @@
 import re
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
+
+
+@dataclass
+class Diff:
+    text: str
+
+    def __str__(self) -> str:
+        return self.text
+
+
+@dataclass
+class EmptyDiff(Diff):
+    text: str = ""
+
+
+@dataclass
+class Commit:
+    commit_hash: str
+    author: str
+    date: str
+    message: str
+    diff: Diff = field(default_factory=EmptyDiff)
+
+    def __post_init__(self):
+        if isinstance(self.diff, str):
+            self.diff = Diff(text=self.diff)
+
+    def __str__(self):
+        return f"{self.commit_hash} {self.author} {self.date}\n{self.message}"
 
 
 def add(file_path: Optional[str], patch: bool = False) -> None:
@@ -37,9 +66,9 @@ def status(file_path: Optional[str]) -> str:
     return subprocess.check_output(cmd).decode("utf-8")
 
 
-def cached_diff() -> str:
+def cached_diff() -> Diff:
     diff = subprocess.check_output(["git", "diff", "--cached"])
-    return diff.decode("utf-8")
+    return Diff(diff.decode("utf-8"))
 
 
 def create_commit(message: str) -> None:
@@ -104,30 +133,17 @@ def show(commit_hash: str) -> str:
     return diff.decode("utf-8")
 
 
-@dataclass
-class Commit:
-    commit_hash: str
-    author: str
-    date: str
-    message: str
-    diff: str
-
-    def __str__(self):
-        return f"{self.commit_hash} {self.author} {self.date}\n{self.message}"
-
-
 def parse_commit(commit_text: str) -> Commit:
     commit_and_diff = re.split("\n(?=diff --git)", commit_text)
     commit_text = commit_and_diff[0]
     lines = commit_text.strip().split("\n")
     # Merge commits dont have a diff
-    diff = commit_and_diff[1] if len(commit_and_diff) > 1 else ""
     return Commit(
         commit_hash=lines[0].split(" ")[1],
         author=lines[1].replace("Author: ", ""),
         date=lines[2].replace("Date:   ", ""),
         message="\n".join([line.strip() for line in lines[4:]]),
-        diff=diff,
+        diff=Diff(commit_and_diff[1]) if len(commit_and_diff) > 1 else EmptyDiff(),
     )
 
 
