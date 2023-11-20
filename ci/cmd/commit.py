@@ -16,7 +16,7 @@ def create_new_commit(history=0):
     if not input_diff:
         raise ValueError("No changes to commit.")
 
-    history_messages = _get_history(history)
+    history_messages = _get_history(history) if history > 0 else []
     commit_msg = _ask_for_commit_msg(input_diff.text, history=history_messages)
     if not commit_msg:
         raise ValueError("Commit message cannot be empty.")
