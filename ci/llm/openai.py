@@ -189,7 +189,9 @@ class ChatCompletionResponse:
     class Choices:
         message: Message
         index: int
+        logprobs: Optional[dict]
         finish_reason: str
+
 
         def __post_init__(self):
             if isinstance(self.message, dict):
