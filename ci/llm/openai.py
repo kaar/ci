@@ -2,8 +2,12 @@ import datetime
 import json
 from dataclasses import asdict, dataclass, field
 from typing import Optional
+import logging
+
 
 import openai
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Models:
@@ -234,5 +238,7 @@ def chat_completion(request: ChatRequest) -> ChatCompletionResponse:
         messages=messages,
         temperature=request.temperature,
     )
+
+    LOGGER.debug(response)
 
     return ChatCompletionResponse(**response)
