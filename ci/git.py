@@ -166,6 +166,7 @@ def latest_commits(n: int) -> list[Commit]:
     Returns:
         A list of Commit objects.
     """
+    assert n > 0, "Number of commits needs to be larger then 0"
     log_data = subprocess.check_output(["git", "log", "-p", "-{}".format(n)]).decode("utf-8").strip()
     commits = re.split("\n(?=commit)", log_data)
     return [parse_commit(commit_text=commit) for commit in commits]

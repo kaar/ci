@@ -1,5 +1,8 @@
+import openai
+
 from ci import git
-from ci.llm import openai
+
+DEFAULT_MODEL = "gpt-4-turbo"
 
 
 def create_new_commit(history=0):
@@ -16,8 +19,8 @@ def create_new_commit(history=0):
     if not input_diff:
         raise ValueError("No changes to commit.")
 
-    history_messages = _get_history(history) if history > 0 else []
-    commit_msg = _ask_for_commit_msg(input_diff.text, history=history_messages)
+    commit_history = git.latest_commits(history) if history else []
+    commit_msg = _ask_for_commit_msg(input_diff.text, commit_history=commit_history)
     if not commit_msg:
         raise ValueError("Commit message cannot be empty.")
 
@@ -38,17 +41,17 @@ def amend_commit():
     if not input_diff:
         raise ValueError("No changes to commit.")
 
-    history_messages = _get_history(1)
+    commit_history = git.latest_commits(1)
 
-    commit_msg = _ask_for_commit_msg(input_diff.text, history=history_messages)
+    commit_msg = _ask_for_commit_msg(input_diff.text, commit_history=commit_history)
 
     git.amend_commit(commit_msg)
 
 
 def _ask_for_commit_msg(
     input_diff: str,
-    history: list,
-    model: str = openai.Models.DEFAULT_MODEL,
+    commit_history: list,
+    model: str = DEFAULT_MODEL,
     temperature: float = 0.2,
 ) -> str:
     """This function takes a git diff as input and returns a git commit message"""
@@ -62,34 +65,26 @@ Capitalize the subject line.
 Do not end the subject line with a period.
 Use the imperative mood in the subject line.
 Wrap the body at 72 characters.
-Use the body to explain what and why vs. how.
 """
-    history = history or []
+    # history = history or []
 
-    system_message = openai.SystemMessage(COMMIT_INSTRUCTION)
-    input_message = openai.UserMessage(input_diff)
+    openai_client = openai.OpenAI()
 
-    response = openai.chat_completion(
-        request=openai.ChatRequest(
-            model=model,
-            messages=[
-                system_message,
-                *history,
-                input_message,
-            ],
-            temperature=temperature,
-        )
+    response = openai_client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": COMMIT_INSTRUCTION,
+            },
+            {
+                "role": "user",
+                "content": input_diff,
+            },
+        ],
+        model=model,
+        temperature=temperature,
     )
+
     commit_msg = response.choices[0].message.content
 
-    return commit_msg
-
-
-def _get_history(history: int) -> list[openai.Message]:
-    latest_commits = git.latest_commits(history)
-    history_messages: list[openai.Message] = []
-    for commit in latest_commits:
-        history_messages.append(openai.UserMessage(commit.message))
-        history_messages.append(openai.UserMessage(commit.diff.text))
-
-    return history_messages
+    return commit_msg if commit_msg else ""
