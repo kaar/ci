@@ -67,6 +67,12 @@ def status(file_path: Optional[str]) -> str:
 
 
 def cached_diff() -> Diff:
+    """
+    Returns the diff of the files in the git index.
+
+    Returns:
+        The diff of the files in the git index.
+    """
     diff = subprocess.check_output(["git", "diff", "--cached"])
     return Diff(diff.decode("utf-8"))
 
