@@ -58,7 +58,7 @@ def _ask_for_commit_msg(
 
     COMMIT_INSTRUCTION = """
 You will receive a git diff and respond with a git commit message.
-Provide a clear and concise commit message that summarizes the changes made in this diff.
+Provide a clear and concise commit message based on the changes in the provided git diff.
 Separate subject from body with a blank line.
 Limit the subject line to 50 characters.
 Capitalize the subject line.
