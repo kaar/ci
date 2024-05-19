@@ -2,7 +2,7 @@ import openai
 
 from ci import git
 
-DEFAULT_MODEL = "gpt-4-turbo"
+DEFAULT_MODEL = "gpt-4o"
 
 
 def create_new_commit(history=0):
