@@ -20,6 +20,7 @@ build-backend = "hatchling.build"
 
 [project.scripts]
 ag = "ci.ag:cli"
+ci = "ci.ci:create_commit"
 
 [tool.black]
 line-length = 120
