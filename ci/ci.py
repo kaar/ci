@@ -24,6 +24,9 @@ Separate subject from body with a blank line.
 Wrap the body at 72 characters.
 Prefer descriptive sentences over bulletpoints.
 Avoid using words like refactor, update, fix, or change.
+
+### Additional Notes:
+* You should also look for any obvious bugs in the code, summarize them at the end if you find any.
 """
 
 
