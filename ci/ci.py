@@ -31,28 +31,34 @@ Avoid using words like refactor, update, fix, or change.
 
 
 def create_commit():
-    input_diff = git.cached_diff()
-    if not input_diff:
-        raise ValueError("No changes to commit.")
+    print("Creating commit message...")
+    try:
+        input_diff = git.cached_diff()
+        if not input_diff:
+            raise ValueError("No changes to commit.")
 
-    openai_client = openai.OpenAI()
-    messages: list[ChatCompletionMessageParam] = [
-        {"role": "system", "content": f"{COMMIT_INSTRUCTION}"},
-        {"role": "user", "content": f"{input_diff.text}"},
-    ]
+        openai_client = openai.OpenAI()
+        messages: list[ChatCompletionMessageParam] = [
+            {"role": "system", "content": f"{COMMIT_INSTRUCTION}"},
+            {"role": "user", "content": f"{input_diff.text}"},
+        ]
 
-    response = openai_client.chat.completions.create(
-        messages=messages,
-        model=MODEL,
-        temperature=TEMPERATURE,
-    )
+        response = openai_client.chat.completions.create(
+            messages=messages,
+            model=MODEL,
+            temperature=TEMPERATURE,
+        )
 
-    commit_msg = response.choices[0].message.content
+        commit_msg = response.choices[0].message.content
+        print(commit_msg)
 
-    if DRY_RUN:
-        return commit_msg if commit_msg else ""
+        if DRY_RUN:
+            return commit_msg if commit_msg else ""
 
-    if not commit_msg:
-        raise ValueError("Commit message cannot be empty.")
+        if not commit_msg:
+            raise ValueError("Commit message cannot be empty.")
 
-    git.create_commit(commit_msg)
+        git.create_commit(commit_msg)
+    except Exception as e:
+        print(f"Error: {e}")
+        raise e
