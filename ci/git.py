@@ -120,7 +120,7 @@ def validate_commit_hash(commit_hash: str) -> bool:
     if commit_hash.startswith("HEAD"):
         return True
 
-    return bool(re.match(r'^[0-9a-f]{7,40}$', commit_hash))
+    return bool(re.match(r"^[0-9a-f]{7,40}$", commit_hash))
 
 
 def commit_hash_exists(commit_hash: str) -> bool:
