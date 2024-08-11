@@ -67,7 +67,7 @@ class Cache(Protocol):
 
 
 class JsonFileCache(Cache):
-    def __init__(self, cache_dir: Path = Path(".cache")):
+    def __init__(self, cache_dir: Path = CACHE_DIR):
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -142,18 +142,18 @@ def create_messages() -> list[ChatCompletionMessageParam]:
 
 
 def create_commit():
-    print("Creating commit message...")
+    """
+    TODO:
+        * Load examples
+        * Load last five commits
+        * Add them to context
+    """
     try:
-        input_diff = git.cached_diff()
-        if not input_diff:
-            raise ValueError("No changes to commit.")
-
         openai_client = openai.OpenAI()
-        messages: list[ChatCompletionMessageParam] = [
-            {"role": "system", "content": f"{COMMIT_INSTRUCTION}"},
-            {"role": "user", "content": f"{input_diff.text}"},
-        ]
+        messages = create_messages()
 
+        cache = JsonFileCache()
+        cache.set("messages", messages)
         response = openai_client.chat.completions.create(
             messages=messages,
             model=MODEL,
@@ -161,7 +161,7 @@ def create_commit():
         )
 
         commit_msg = response.choices[0].message.content
-        print(commit_msg)
+        cache.set("commit_msg", {"commit_msg": commit_msg})
 
         if DRY_RUN:
             return commit_msg if commit_msg else ""
@@ -171,5 +171,5 @@ def create_commit():
 
         git.create_commit(commit_msg)
     except Exception as e:
-        print(f"Error: {e}")
-        raise e
+        LOGGER.exception(f"Error: {e}")
+        raise
