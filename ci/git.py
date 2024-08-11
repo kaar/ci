@@ -187,3 +187,15 @@ def latest_commits(n: int) -> list[Commit]:
     )
     commits = re.split("\n(?=commit)", log_data)
     return [parse_commit(commit_text=commit) for commit in commits]
+
+
+def log(n: int) -> str:
+    """
+    Returns the log history including diff.
+    Excludes lock files.
+    """
+    assert n > 0, "Number of commits needs to be larger than 0"
+    log_data = subprocess.check_output(
+        ["git", "log", "-{}".format(n), "-p", ":!**/*.lock"]
+    ).decode("utf-8")
+    return log_data
