@@ -11,19 +11,17 @@ MODEL = "gpt-4o"
 TEMPERATURE = 0.2
 DEFAULT_MODEL = "gpt-4o"
 COMMIT_INSTRUCTION = """
-You will receive a git diff and respond with a git commit message.
-Provide a clear and concise commit message based on the changes in the diff.
-Try to describe what the change is intended to accomplish.
+Act as a git commit message writer.
 
-### Guidelines:
+You will receive a git diff and respond with a git commit message that follows the guidelines below:
 Limit the subject line to 50 characters.
 Capitalize the subject line.
 Do not end the subject line with a period.
 Use the imperative mood in the subject line.
 Separate subject from body with a blank line.
 Wrap the body at 72 characters.
-Prefer descriptive sentences over bulletpoints.
-Avoid using words like refactor, update, fix, or change.
+Use code examples if needed to descripe the intent of the commit.
+Use short and concise sentences, shorter is better.
 
 ### Additional Notes:
 * You should also look for any obvious bugs in the code, summarize them at the end if you find any.
