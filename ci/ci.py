@@ -1,11 +1,39 @@
+"""
+TODO: I don't trust the openai api. I should switch it out
+"""
+
+import logging
 import os
+from typing import Protocol
+from pathlib import Path
+import json
+
 
 import openai
 from openai.types.chat import ChatCompletionMessageParam
 
 from . import git
 
-DRY_RUN = os.environ.get("TEST", False)
+
+def bool_env(key: str, default=False) -> bool:
+    return os.environ.get(key, str(default)).lower() == "true"
+
+
+DRY_RUN: bool = bool_env("TEST", False)
+DEBUG: bool = bool_env("DEBUG", False)
+
+# Adding example and history did not have much of an impact on the quality of the commit message
+# I'm not sure why. I was hoping to get it to align better with how I write commit messages.
+# I've tried both including it in the system context and as a user message.
+# Maybe OpenAIs API is doing some cachine or something, because I don't see any changes at all to the output.
+ADD_EXAMPLES: bool = bool_env("ADD_EXAMPLES", False)
+ADD_HISTORY: bool = bool_env("ADD_HISTORY", False)
+DATA_DIR = os.path.expanduser(f"{os.environ.get('XDG_DATA_DIR', '~/.local/share')}/ci")
+CACHE_DIR = Path("/home/tibber/repos/kaar/ci/requests")
+LOG_LEVEL = logging.INFO if DRY_RUN else logging.DEBUG if DEBUG else logging.WARN
+
+logging.basicConfig(level=LOG_LEVEL, format="%(message)s")
+LOGGER = logging.getLogger(__name__)
 
 MODEL = "gpt-4o"
 TEMPERATURE = 0.2
